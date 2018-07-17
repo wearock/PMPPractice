@@ -16,7 +16,7 @@
         style="@style/SettingsView.Header" />
 
     <LinearLayout
-        android:id="@+id/pQuestionCount"
+        android:id="@+id/pQuestionSource"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="4dp"
@@ -35,7 +35,63 @@
             android:layout_height="40dp"
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
-            android:src="@drawable/config_stack" />
+            android:src="@drawable/config_source"
+            android:contentDescription="@string/image_description"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/config_question_source"
+            style="@style/SettingsView" />
+
+        <TextView
+            android:id="@+id/tvQuestionSource"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            style="@style/SettingsView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/config_item_expand"
+            style="@style/SettingsView" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pQuestionCount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/pQuestionSource">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/config_stack"
+            android:contentDescription="@string/image_description" />
 
         <TextView
             android:layout_width="0dp"
@@ -56,7 +112,6 @@
             android:paddingRight="8dp"
             android:paddingEnd="8dp"
             android:gravity="center_vertical"
-            android:text="200"
             style="@style/SettingsView" />
 
         <TextView
@@ -90,7 +145,8 @@
             android:layout_height="40dp"
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
-            android:src="@drawable/config_clock" />
+            android:src="@drawable/config_clock"
+            android:contentDescription="@string/image_description" />
 
         <TextView
             android:layout_width="0dp"
@@ -111,7 +167,6 @@
             android:paddingStart="0dp"
             android:paddingRight="8dp"
             android:paddingEnd="8dp"
-            android:text="200"
             style="@style/SettingsView" />
 
         <TextView
@@ -146,7 +201,7 @@
             android:checked="true"
             android:layout_marginRight="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_gravity="right|center_vertical"/>
+            android:layout_gravity="end|center_vertical"/>
 
     </FrameLayout>
 

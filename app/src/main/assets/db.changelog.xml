@@ -509,4 +509,10 @@
         (199,2,22,'自下而上估算','PMBOK（6）7.2.2.4估算成本-自下而上估算。首先对单个工作包或活动成本进行最具体、细致的估算，然后把这些细节性成本向上汇总或“滚动”到更高层次，用于后续报告和跟踪。自下而上估算的准确性及其本山所需的成本，通常取决于单个活动或工作包的规模或其他属性。'),
         (200,2,7,'变更控制流程','题目描述的场景是 PM 发现了项目执行存在偏差，那么 PM应该执行纠正措施，确保执行符合计划，敏感词是“下一步”,纠正措施是一种变更请求，C正确');
     </changeSet>
+    <changeSet id="add question source column" author="jjia">
+        alter table question add column source INTEGER;
+    </changeSet>
+    <changeSet id="update current questions source to 1" author="jjia">
+        update question set source=1;
+    </changeSet>
 </databaseChangeLog>

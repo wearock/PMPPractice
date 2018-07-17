@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">PMP真题练习</string>
+    <string name="image_description">图片</string>
     <string name="dialog_positive_button">确定</string>
     <string name="dialog_negative_button">取消</string>
 
@@ -17,6 +18,7 @@
     <string name="config_title">练习范围</string>
     <string name="config_menu_start_practice">开始测试</string>
     <string name="config_basics">基础设置</string>
+    <string name="config_question_source">题目来源：</string>
     <string name="config_question_count">题目数量：</string>
     <string name="config_time_limit">限时时间：</string>
     <string name="config_domains">知识领域</string>

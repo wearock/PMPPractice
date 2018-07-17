@@ -3,15 +3,16 @@ package com.wearock.pmppractice.views;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -26,16 +27,16 @@ import com.wearock.pmppractice.models.PracticeConfiguration;
 import com.wearock.pmppractice.views.adapters.PracticeDomainAdapter;
 import com.wearock.pmppractice.views.base.ManagedActivity;
 
-import java.security.DomainCombiner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ConfigActivity extends ManagedActivity {
 
-    private LinearLayout pQuestionCount;
-    private LinearLayout pTimeLimit;
+    private TextView tvQuestionSource;
     private TextView tvQuestionCount;
     private TextView tvTimeLimit;
     private CheckBox chkAllDomains;
@@ -44,10 +45,12 @@ public class ConfigActivity extends ManagedActivity {
     private PracticeDomainAdapter adapter;
     private HashMap<String, Integer> mapDomainCounts;
     private ArrayList<String> lstDomainDisplays;
+    private AlertDialog dialog;
     private int maxQuestionCount;
     private int maxTimeLimit;
     private boolean bBlockEvent = false;
 
+    private DomainDAO domainDAO;
     private PracticeConfiguration config;
 
     @Override
@@ -57,29 +60,9 @@ public class ConfigActivity extends ManagedActivity {
 
         initControls();
 
-        try {
-            DomainDAO domainDAO = new DomainDAO(ConfigActivity.this,
-                    Application.getInstance().getDBHelper(ConfigActivity.this));
-            mapDomainCounts = domainDAO.getDomainQuestionCounts();
-        } catch (DBHelper.DBAccessException dbe) {
-            Toast.makeText(ConfigActivity.this, dbe.getMessage(), Toast.LENGTH_LONG).show();
-            mapDomainCounts = new HashMap<>();
-        }
-
-        lstDomainDisplays = new ArrayList<>();
-        Iterator iter = mapDomainCounts.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            lstDomainDisplays.add(String.format("%s (%d)", entry.getKey(), entry.getValue()));
-        }
-
-        adapter = new PracticeDomainAdapter(lstDomainDisplays, ConfigActivity.this);
-        lvPracticeDomains.setAdapter(adapter);
-
-        maxQuestionCount = calculateTotalQuestionCount();
-        maxTimeLimit = maxQuestionCount + maxQuestionCount / 2;
-        tvQuestionCount.setText(String.valueOf(maxQuestionCount));
-        tvTimeLimit.setText(String.valueOf(maxTimeLimit));
+        domainDAO = new DomainDAO(ConfigActivity.this,
+                Application.getInstance().getDBHelper(ConfigActivity.this));
+        tvQuestionSource.setText(PracticeConfiguration.SourceEnum.ALL.getName());
     }
 
     @Override
@@ -108,14 +91,100 @@ public class ConfigActivity extends ManagedActivity {
     }
 
     private void initControls() {
-        pQuestionCount = findViewById(R.id.pQuestionCount);
-        pTimeLimit = findViewById(R.id.pTimeLimit);
+        tvQuestionSource = findViewById(R.id.tvQuestionSource);
         tvQuestionCount = findViewById(R.id.tvQuestionCount);
         tvTimeLimit = findViewById(R.id.tvTimeLimit);
         chkAllDomains = findViewById(R.id.chkAllDomains);
         lvPracticeDomains = findViewById(R.id.lvPracticeDomains);
 
-        pQuestionCount.setOnClickListener(new View.OnClickListener() {
+        tvQuestionSource.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                PracticeConfiguration.SourceEnum source = PracticeConfiguration.SourceEnum.fromName(charSequence.toString());
+                try {
+                    mapDomainCounts = domainDAO.getDomainQuestionCounts(source);
+                } catch (DBHelper.DBAccessException dbe) {
+                    Toast.makeText(ConfigActivity.this, dbe.getMessage(), Toast.LENGTH_LONG).show();
+                    mapDomainCounts = new HashMap<>();
+                }
+
+                lstDomainDisplays = new ArrayList<>();
+                for (Map.Entry<String, Integer> entry : mapDomainCounts.entrySet()) {
+                    lstDomainDisplays.add(String.format(Locale.US, "%s (%d)", entry.getKey(), entry.getValue()));
+                }
+
+                adapter = new PracticeDomainAdapter(lstDomainDisplays, ConfigActivity.this);
+                lvPracticeDomains.setAdapter(adapter);
+
+                maxQuestionCount = calculateTotalQuestionCount();
+                tvQuestionCount.setText(String.valueOf(maxQuestionCount));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        tvQuestionCount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int qCount = Integer.valueOf(charSequence.toString());
+                maxTimeLimit = qCount + qCount / 2;
+                tvTimeLimit.setText(String.valueOf(maxTimeLimit));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        findViewById(R.id.pQuestionSource).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ConfigActivity.this);
+                builder.setTitle(R.string.config_question_source);
+
+                ListView lvSource = new ListView(ConfigActivity.this);
+                final List<String> sourceList = new ArrayList<>();
+                for (PracticeConfiguration.SourceEnum se : PracticeConfiguration.SourceEnum.values()) {
+                    sourceList.add(se.getName());
+                }
+                lvSource.setAdapter(new ArrayAdapter<>(ConfigActivity.this,
+                        android.R.layout.simple_list_item_1, sourceList));
+                lvSource.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        tvQuestionSource.setText(sourceList.get(i));
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setView(lvSource);
+                builder.setNegativeButton(R.string.dialog_negative_button,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+        findViewById(R.id.pQuestionCount).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConfigActivity.this);
@@ -133,11 +202,6 @@ public class ConfigActivity extends ManagedActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 int qCount = npQuestionCount.getValue();
                                 tvQuestionCount.setText(String.valueOf(qCount));
-                                maxTimeLimit = qCount + qCount / 2;
-                                if (maxTimeLimit < Integer.valueOf(tvTimeLimit.getText().toString())) {
-                                    tvTimeLimit.setText(String.valueOf(maxTimeLimit));
-                                }
-
                                 dialogInterface.dismiss();
                             }
                         });
@@ -152,7 +216,7 @@ public class ConfigActivity extends ManagedActivity {
             }
         });
 
-        pTimeLimit.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.pTimeLimit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ConfigActivity.this);
@@ -192,9 +256,7 @@ public class ConfigActivity extends ManagedActivity {
                 }
 
                 HashMap<String, Boolean> isSelected = adapter.getIsSelected();
-                Iterator iter = isSelected.entrySet().iterator();
-                while (iter.hasNext()) {
-                    Map.Entry entry = (Map.Entry)iter.next();
+                for (Map.Entry<String, Boolean> entry : isSelected.entrySet()) {
                     isSelected.put(String.valueOf(entry.getKey()), checked);
                 }
                 adapter.setIsSelected(isSelected);
@@ -220,12 +282,10 @@ public class ConfigActivity extends ManagedActivity {
 
     private int calculateTotalQuestionCount() {
         int total = 0;
-        Iterator iter = adapter.getIsSelected().entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            String displayName = entry.getKey().toString();
+        for (Map.Entry<String, Boolean> entry : adapter.getIsSelected().entrySet()) {
+            String displayName = entry.getKey();
             String domainName = displayName.substring(0, displayName.indexOf("(") - 1);
-            if ((boolean)entry.getValue())
+            if (entry.getValue())
                 total += mapDomainCounts.get(domainName);
         }
 
@@ -249,16 +309,15 @@ public class ConfigActivity extends ManagedActivity {
     private void collectConfiguration() {
         ArrayList<String> lstSelectedDomains = new ArrayList<>();
         HashMap<String, Boolean> isSelected = adapter.getIsSelected();
-        Iterator iter = isSelected.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            if ((Boolean) entry.getValue()) {
-                String displayName = entry.getKey().toString();
+        for (Map.Entry<String, Boolean> entry : isSelected.entrySet()) {
+            if (entry.getValue()) {
+                String displayName = entry.getKey();
                 lstSelectedDomains.add(displayName.substring(0, displayName.indexOf("(") - 1));
             }
         }
 
         config = new PracticeConfiguration();
+        config.setQuestionSource(PracticeConfiguration.SourceEnum.fromName(tvQuestionSource.getText().toString()));
         config.setSelectedDomains(lstSelectedDomains);
         config.setQuestionCount(Integer.valueOf(tvQuestionCount.getText().toString()));
         config.setTimeLimit(Integer.valueOf(tvTimeLimit.getText().toString()));

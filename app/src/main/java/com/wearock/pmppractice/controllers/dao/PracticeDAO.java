@@ -14,12 +14,13 @@ import com.wearock.pmppractice.models.PracticeHistory;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class PracticeDAO {
 
     private Context curContext;
     private DBHelper dbHelper;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
     public PracticeDAO(Context context, DBHelper dbHelper) {
         this.curContext = context;
@@ -32,13 +33,14 @@ public class PracticeDAO {
         try {
             db = dbHelper.getReadableDatabase();
             db.execSQL("insert into practice_history(configuration,creation) values (?,?)",
-                    new String[] { JSONHelper.toJSON(config), sdf.format(Calendar.getInstance().getTime()) });
+                    new String[] { PracticeConfiguration.toJsonString(config), sdf.format(Calendar.getInstance().getTime()) });
 
             Cursor cursor = db.rawQuery("select id from practice_history order by id desc", new String[] {});
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 newPracticeId = cursor.getInt(0);
             }
+            cursor.close();
             db.close();
         } catch (Exception e) {
             throw new DBHelper.DBAccessException(
@@ -61,7 +63,6 @@ public class PracticeDAO {
                             JSONHelper.toJSON(result.getAnswers()),
                             result.getCompletionTime(),
                             String.valueOf(result.getId()) });
-            db.close();
         } catch (Exception e) {
             throw new DBHelper.DBAccessException(
                     curContext.getResources().getString(R.string.err_dao_level_failure), e);
@@ -94,6 +95,7 @@ public class PracticeDAO {
                     lstRecords.add(history);
                 } while (cursor.moveToNext());
             }
+            cursor.close();
         } catch (Exception e) {
             throw new DBHelper.DBAccessException(
                     curContext.getResources().getString(R.string.err_dao_level_failure), e);
@@ -124,6 +126,7 @@ public class PracticeDAO {
                 history.setCreationTime(cursor.getString(cursor.getColumnIndex("creation")));
                 history.setCompletionTime(cursor.getString(cursor.getColumnIndex("completion")));
             }
+            cursor.close();
         } catch (Exception e) {
             throw new DBHelper.DBAccessException(
                     curContext.getResources().getString(R.string.err_dao_level_failure), e);
