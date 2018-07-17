@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/practice_tips_correct_answer"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" />
+        <TextView
+            android:id="@+id/tvTipsAnswer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/practice_tips_domain"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" />
+        <TextView
+            android:id="@+id/tvTipsDomain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/practice_tips_process"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" />
+        <TextView
+            android:id="@+id/tvTipsProcess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/practice_tips_subproc"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" />
+        <TextView
+            android:id="@+id/tvTipsSubproc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="@string/practice_tips_kp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp" />
+        <TextView
+            android:id="@+id/tvTipsKnowledgePoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/practice_tips_explain"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tvTipsExplain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp" />
+
+</LinearLayout>

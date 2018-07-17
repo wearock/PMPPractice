@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">PMP真题练习</string>
+    <string name="dialog_positive_button">确定</string>
+    <string name="dialog_negative_button">取消</string>
+
+    <!-- Main Activity -->
+    <string name="main_header_question_count">在库真题</string>
+    <string name="main_header_practice_count">练习次数</string>
+    <string name="main_header_highest_rate">最高正确率</string>
+    <string name="main_default_count">0</string>
+    <string name="main_default_rate">N/A</string>
+    <string name="main_history_item_rate">正确率：</string>
+    <string name="main_history_item_creation">练习时间：</string>
+    <string name="main_start_new_practice">新建练习</string>
+
+    <!-- Config Activity -->
+    <string name="config_title">练习范围</string>
+    <string name="config_menu_start_practice">开始测试</string>
+    <string name="config_basics">基础设置</string>
+    <string name="config_question_count">题目数量：</string>
+    <string name="config_time_limit">限时时间：</string>
+    <string name="config_domains">知识领域</string>
+    <string name="config_item_expand">&gt;</string>
+
+    <!-- Practice Activity -->
+    <string name="practice_menu_tips">题目解析</string>
+    <string name="practice_menu_submit">提交结果</string>
+    <string name="practice_menu_exit">退出</string>
+    <string name="practice_language_chinese">中文</string>
+    <string name="practice_language_english">英文</string>
+    <string name="practice_completed">完成题目：</string>
+    <string name="practice_time_left">剩余时间：</string>
+    <string name="practice_timed_out">时间已用完，即将退出测试。</string>
+    <string name="practice_unfinished">还有尚未完成的题目哦！确定要提交吗？</string>
+    <string name="practice_tips_correct_answer">正确答案：</string>
+    <string name="practice_tips_domain">知识领域：</string>
+    <string name="practice_tips_process">过程组：</string>
+    <string name="practice_tips_subproc">子过程：</string>
+    <string name="practice_tips_kp">知识点：</string>
+    <string name="practice_tips_explain">解释：</string>
+
+    <!-- Score Activity -->
+    <string name="score_menu_exit">返回主页</string>
+    <string name="score_general">通用信息</string>
+    <string name="score_total">总成绩：</string>
+    <string name="score_creation">开始时间：</string>
+    <string name="score_completion">提交时间：</string>
+    <string name="score_correctness">正确率</string>
+    <string name="score_question_details">答题详情</string>
+
+    <!-- Error Messages -->
+    <string name="err_changelog_load_failed">无法读取本地数据库结构信息！程序即将退出。</string>
+    <string name="err_dao_level_failure">数据库访问操作失败！</string>
+
+</resources>

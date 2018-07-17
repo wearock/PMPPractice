@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.ConfigActivity">
+
+    <TextView
+        android:id="@+id/tvBasicsTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:text="@string/config_basics"
+        style="@style/SettingsView.Header" />
+
+    <LinearLayout
+        android:id="@+id/pQuestionCount"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tvBasicsTitle">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/config_stack" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/config_question_count"
+            style="@style/SettingsView" />
+
+        <TextView
+            android:id="@+id/tvQuestionCount"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="200"
+            style="@style/SettingsView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/config_item_expand"
+            style="@style/SettingsView" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pTimeLimit"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/pQuestionCount">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/config_clock" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/config_time_limit"
+            style="@style/SettingsView" />
+
+        <TextView
+            android:id="@+id/tvTimeLimit"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="0dp"
+            android:paddingStart="0dp"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            android:text="200"
+            style="@style/SettingsView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="@string/config_item_expand"
+            style="@style/SettingsView" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/pDomains"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/pTimeLimit">
+
+        <TextView
+            android:id="@+id/tvDomainsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="@string/config_domains"
+            style="@style/SettingsView.Header"/>
+
+        <CheckBox
+            android:id="@+id/chkAllDomains"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="right|center_vertical"/>
+
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/lvPracticeDomains"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/pDomains"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"/>
+
+</android.support.constraint.ConstraintLayout>
