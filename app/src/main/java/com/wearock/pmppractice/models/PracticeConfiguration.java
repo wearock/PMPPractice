@@ -36,7 +36,7 @@ public class PracticeConfiguration implements Serializable {
         this.questionSource = questionSource;
     }
 
-    private SourceEnum getQuestionSource() {
+    public SourceEnum getQuestionSource() {
         return questionSource;
     }
 

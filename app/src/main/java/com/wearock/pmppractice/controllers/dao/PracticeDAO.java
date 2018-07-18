@@ -86,8 +86,7 @@ public class PracticeDAO {
                     PracticeHistory history = new PracticeHistory();
                     history.setId(cursor.getInt(cursor.getColumnIndex("id")));
                     history.setTotalScore(cursor.getInt(cursor.getColumnIndex("score")));
-                    history.setConfiguration(JSONHelper.parseObject(cursor.getString(cursor.getColumnIndex("configuration")),
-                            PracticeConfiguration.class));
+                    history.setConfiguration(PracticeConfiguration.parseJsonString(cursor.getString(cursor.getColumnIndex("configuration"))));
                     history.setAnswers(JSONHelper.parseArray(cursor.getString(cursor.getColumnIndex("results")), Answer.class));
                     history.setCreationTime(cursor.getString(cursor.getColumnIndex("creation")));
                     history.setCompletionTime(cursor.getString(cursor.getColumnIndex("completion")));
@@ -120,8 +119,7 @@ public class PracticeDAO {
                 history = new PracticeHistory();
                 history.setId(pid);
                 history.setTotalScore(cursor.getInt(cursor.getColumnIndex("score")));
-                history.setConfiguration(JSONHelper.parseObject(cursor.getString(cursor.getColumnIndex("configuration")),
-                        PracticeConfiguration.class));
+                history.setConfiguration(PracticeConfiguration.parseJsonString(cursor.getString(cursor.getColumnIndex("configuration"))));
                 history.setAnswers(JSONHelper.parseArray(cursor.getString(cursor.getColumnIndex("results")), Answer.class));
                 history.setCreationTime(cursor.getString(cursor.getColumnIndex("creation")));
                 history.setCompletionTime(cursor.getString(cursor.getColumnIndex("completion")));

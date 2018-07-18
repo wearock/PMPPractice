@@ -29,50 +29,52 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"/>
 
+            <ImageView
+                android:id="@+id/imgQuestionImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/image_description"
+                android:scaleType="fitCenter"
+                android:src="@drawable/config_source" />
+
             <RadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
 
                 <RadioButton
                     android:id="@+id/rbQuestionChoiceA"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp"/>
+                    android:layout_marginTop="4dp"
+                    android:textSize="16sp" />
 
                 <RadioButton
                     android:id="@+id/rbQuestionChoiceB"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:textSize="16sp" />
 
                 <RadioButton
                     android:id="@+id/rbQuestionChoiceC"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:textSize="16sp" />
 
                 <RadioButton
                     android:id="@+id/rbQuestionChoiceD"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp" />
+                    android:layout_marginTop="4dp"
+                    android:textSize="16sp" />
 
             </RadioGroup>
         </LinearLayout>
     </ScrollView>
-
-    <View
-        android:id="@+id/vTransHover"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/pQuestionResult"
-        android:clickable="true"/>
 
     <LinearLayout
         android:id="@+id/pQuestionResult"
@@ -103,7 +105,8 @@
             android:src="@drawable/tips"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp" />
+            android:layout_marginStart="12dp"
+            android:contentDescription="@string/image_description"/>
 
     </LinearLayout>
 

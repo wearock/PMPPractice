@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +28,6 @@ import com.wearock.pmppractice.controllers.DBHelper;
 import com.wearock.pmppractice.controllers.dao.PracticeDAO;
 import com.wearock.pmppractice.controllers.dao.QuestionDAO;
 import com.wearock.pmppractice.models.Answer;
-import com.wearock.pmppractice.models.PracticeConfiguration;
 import com.wearock.pmppractice.models.PracticeHistory;
 import com.wearock.pmppractice.models.Question;
 import com.wearock.pmppractice.models.QuestionBody;
@@ -39,15 +37,14 @@ import com.wearock.pmppractice.views.adapters.QuestionStatusAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PracticeActivity extends AppCompatActivity {
 
-    private Switch swhLanguage;
     private ViewPager vpBodyPager;
     private SeekBar sbProgress;
-    private LinearLayout pPracticeStatus;
     private TextView tvPracticeStatus;
     private TextView tvTimeLeft;
     private AlertDialog dlgStatus;
@@ -79,8 +76,7 @@ public class PracticeActivity extends AppCompatActivity {
                 score = practiceDAO.getHistoryById(intent.getIntExtra("pid", 0));
                 editable = true;
                 secondsLeft = score.getConfiguration().getTimeLimit() * 60;
-                lstQuestions = questionDAO.getQuestionsByDomainList(score.getConfiguration().getSelectedDomains(),
-                        score.getConfiguration().getQuestionCount());
+                lstQuestions = questionDAO.getQuestionsByConfig(score.getConfiguration());
             } else {
                 editable = false;
                 secondsLeft = 0;
@@ -100,7 +96,6 @@ public class PracticeActivity extends AppCompatActivity {
 
         curLanguage = QuestionBody.Language.Chinese;
 
-        timer = new Timer();
         task = new TimerTask() {
             @Override
             public void run() {
@@ -145,6 +140,7 @@ public class PracticeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (secondsLeft > 0) {
+            timer = new Timer();
             timer.schedule(task, 0, 1000);
         }
     }
@@ -152,16 +148,9 @@ public class PracticeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        timer.cancel();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
         if (timer != null) {
             timer.cancel();
-            timer = null;
+            timer.purge();
         }
     }
 
@@ -210,12 +199,12 @@ public class PracticeActivity extends AppCompatActivity {
     }
 
     private void initControls() {
-        swhLanguage = findViewById(R.id.swhLanguage);
         vpBodyPager = findViewById(R.id.vpBodyPager);
         sbProgress = findViewById(R.id.sbProgress);
-        pPracticeStatus = findViewById(R.id.pPracticeStatus);
         tvPracticeStatus = findViewById(R.id.tvPracticeStatus);
         tvTimeLeft = findViewById(R.id.tvTimeLeft);
+        Switch swhLanguage = findViewById(R.id.swhLanguage);
+        LinearLayout pPracticeStatus = findViewById(R.id.pPracticeStatus);
 
         swhLanguage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -307,6 +296,9 @@ public class PracticeActivity extends AppCompatActivity {
 
         List<Fragment> fragments = new ArrayList<>();
         for (Question question : lstQuestions) {
+            if (question == null) {
+                continue;
+            }
             Answer exitAnswer = score.getAnswerByQuestionId(question.getId());
             fragments.add(PracticeQuestionFragment.newInstance(question,
                     (exitAnswer == null) ? -1 : exitAnswer.getAnswer(), editable));
@@ -333,7 +325,7 @@ public class PracticeActivity extends AppCompatActivity {
 
     private String getStatusString() {
         int answered = (null == score.getAnswers()) ? 0 : score.getAnswers().length;
-        return String.format("%d/%d", answered, lstQuestions.length);
+        return String.format(Locale.US, "%d/%d", answered, lstQuestions.length);
     }
 
     private boolean submitResults(boolean force) {

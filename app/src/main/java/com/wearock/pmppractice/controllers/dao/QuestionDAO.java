@@ -3,21 +3,19 @@ package com.wearock.pmppractice.controllers.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.SparseIntArray;
 
 import com.wearock.pmppractice.R;
 import com.wearock.pmppractice.controllers.DBHelper;
+import com.wearock.pmppractice.models.PracticeConfiguration;
 import com.wearock.pmppractice.models.Question;
 import com.wearock.pmppractice.models.QuestionBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 public class QuestionDAO {
-
-    private final String baseQuestionQuery = "select q.id,q.answer,sp.name as subproc,sp.process,sp.domain,q.knowledge_point,q.explanation " +
-            "from question q join subproc sp on sp.id=q.subproc_id";
-    private final String bodyQuery = "select language,description,choice_a,choice_b,choice_c,choice_d from question_body where question_id=?";
 
     private Context curContext;
     private DBHelper dbHelper;
@@ -38,7 +36,7 @@ public class QuestionDAO {
                 cursor.moveToFirst();
                 count = cursor.getInt(0);
             }
-            db.close();
+            cursor.close();
         } catch (Exception e) {
             throw new DBHelper.DBAccessException(
                     curContext.getResources().getString(R.string.err_dao_level_failure), e);
@@ -50,21 +48,31 @@ public class QuestionDAO {
         return count;
     }
 
-    public Question[] getQuestionsByDomainList(ArrayList<String> lstDomains, int count) throws DBHelper.DBAccessException {
+    public Question[] getQuestionsByConfig(PracticeConfiguration config) throws DBHelper.DBAccessException {
         // Assemble query
+        boolean bApplyQuery = false;
         StringBuilder builder = new StringBuilder();
-        if (lstDomains.size() > 0) {
-            builder.append(" where");
-            for (String domain : lstDomains) {
-                builder.append(" sp.domain='" + domain + "' or");
+        builder.append(" where");
+        if (config.getSelectedDomains().size() > 0) {
+            for (String domain : config.getSelectedDomains()) {
+                builder.append(" sp.domain='");
+                builder.append(domain);
+                builder.append("' or");
             }
             builder.delete(builder.length() - 3, builder.length());
+            bApplyQuery = true;
+        }
+        if (config.getQuestionSource() != PracticeConfiguration.SourceEnum.ALL) {
+            if (bApplyQuery) {
+                builder.append(" and");
+            }
+            builder.append(String.format(Locale.US, "q.source=%d", config.getQuestionSource().getValue()));
         }
 
         SQLiteDatabase db = null;
         try {
             db = dbHelper.getReadableDatabase();
-            return queryQuestions(db, builder.toString(), count, true);
+            return queryQuestions(db, bApplyQuery ? builder.toString() : null, config.getQuestionCount(), true);
         } catch (Exception e) {
             throw new DBHelper.DBAccessException(
                     curContext.getResources().getString(R.string.err_dao_level_failure), e);
@@ -80,7 +88,9 @@ public class QuestionDAO {
         if (lstIds.size() > 0) {
             builder.append(" where");
             for (Integer qid : lstIds) {
-                builder.append(" q.id=" + qid + " or");
+                builder.append(" q.id=");
+                builder.append(qid);
+                builder.append(" or");
             }
             builder.delete(builder.length() - 3, builder.length());
         }
@@ -115,7 +125,9 @@ public class QuestionDAO {
 
     private Question[] queryQuestions(SQLiteDatabase db, String condition, int count, boolean random) {
         Question[] lstQuestions = new Question[count];
-        HashMap<Integer, Integer> indexes;
+        String baseQuestionQuery = "select q.id,q.image,q.answer,sp.name as subproc,sp.process,sp.domain,q.knowledge_point,q.explanation " +
+                "from question q join subproc sp on sp.id=q.subproc_id";
+        SparseIntArray indexes;
         int curIndex = 0;
 
         Cursor cursor = db.rawQuery(baseQuestionQuery + condition, new String[] {});
@@ -124,7 +136,7 @@ public class QuestionDAO {
             if (random)
                 indexes = randomIndexes(cursor.getCount(), count);
             else {
-                indexes = new HashMap<>();
+                indexes = new SparseIntArray();
                 for (int i=0; i<count; i++) {
                     indexes.put(i, i);
                 }
@@ -132,9 +144,10 @@ public class QuestionDAO {
 
             cursor.moveToFirst();
             do {
-                if (indexes.containsKey(curIndex)) {
+                if (indexes.indexOfKey(curIndex) >= 0) {
                     Question question = new Question();
                     question.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    question.setImage(cursor.getString(cursor.getColumnIndex("image")));
                     question.setAnswer(cursor.getInt(cursor.getColumnIndex("answer")));
                     question.setSubProcess(cursor.getString(cursor.getColumnIndex("subproc")));
                     question.setProcess(cursor.getString(cursor.getColumnIndex("process")));
@@ -150,11 +163,13 @@ public class QuestionDAO {
                 curIndex++;
             } while (cursor.moveToNext());
         }
+        cursor.close();
 
         return lstQuestions;
     }
 
     private void queryBodies(SQLiteDatabase db, Question question) {
+        String bodyQuery = "select language,description,choice_a,choice_b,choice_c,choice_d from question_body where question_id=?";
         Cursor cursor = db.rawQuery(bodyQuery, new String[] { String.valueOf(question.getId()) });
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -170,16 +185,17 @@ public class QuestionDAO {
                         body);
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
-    private HashMap<Integer, Integer> randomIndexes(int total, int count) {
+    private SparseIntArray randomIndexes(int total, int count) {
         Random r = new Random();
         ArrayList<Integer> scope = new ArrayList<>();
         for (int i=0; i<total; i++) {
             scope.add(i);
         }
 
-        HashMap<Integer, Integer> indexes = new HashMap<>();
+        SparseIntArray indexes = new SparseIntArray();
         for (int j=0; j<count; j++) {
             int index = r.nextInt(scope.size());
             indexes.put(scope.get(index), j);

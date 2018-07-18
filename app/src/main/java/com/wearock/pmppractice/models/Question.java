@@ -9,6 +9,7 @@ public class Question implements Serializable {
 
     private int id;
     private HashMap<QuestionBody.Language, QuestionBody> bodyMap;
+    private String image;
     private int answer;
     private String domain;
     private String process;
@@ -36,6 +37,14 @@ public class Question implements Serializable {
         if (!bodyMap.containsKey(language))
             return null;
         return bodyMap.get(language);
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public void setAnswer(int answer) {

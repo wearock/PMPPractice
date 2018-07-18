@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog version="1">
+<databaseChangeLog version="2">
     <changeSet id="create question table" author="jjia">
         create table question (
             id INTEGER primary key,
@@ -511,6 +511,9 @@
     </changeSet>
     <changeSet id="add question source column" author="jjia">
         alter table question add column source INTEGER;
+    </changeSet>
+    <changeSet id="add question image column" author="jjia">
+        alter table question add column image TEXT;
     </changeSet>
     <changeSet id="update current questions source to 1" author="jjia">
         update question set source=1;

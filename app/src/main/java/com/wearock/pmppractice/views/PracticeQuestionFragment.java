@@ -2,7 +2,9 @@ package com.wearock.pmppractice.views;
 
 
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -18,6 +21,10 @@ import com.wearock.pmppractice.R;
 import com.wearock.pmppractice.models.Answer;
 import com.wearock.pmppractice.models.Question;
 import com.wearock.pmppractice.models.QuestionBody;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,11 +36,11 @@ public class PracticeQuestionFragment extends Fragment implements CompoundButton
     private boolean editable;
 
     private TextView tvDescription;
+    private ImageView imgQuestionImage;
     private RadioButton rbChoiceA;
     private RadioButton rbChoiceB;
     private RadioButton rbChoiceC;
     private RadioButton rbChoiceD;
-    private View vTransHover;
     private LinearLayout pQuestionResult;
     private TextView tvCorrectAnswer;
 
@@ -63,31 +70,27 @@ public class PracticeQuestionFragment extends Fragment implements CompoundButton
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragRoot = inflater.inflate(R.layout.fragment_practice_question, container, false);
 
         tvDescription = fragRoot.findViewById(R.id.tvQuestionDescription);
+        imgQuestionImage = fragRoot.findViewById(R.id.imgQuestionImage);
         rbChoiceA = fragRoot.findViewById(R.id.rbQuestionChoiceA);
         rbChoiceA.setOnCheckedChangeListener(this);
+        rbChoiceA.setEnabled(editable);
         rbChoiceB = fragRoot.findViewById(R.id.rbQuestionChoiceB);
         rbChoiceB.setOnCheckedChangeListener(this);
+        rbChoiceB.setEnabled(editable);
         rbChoiceC = fragRoot.findViewById(R.id.rbQuestionChoiceC);
         rbChoiceC.setOnCheckedChangeListener(this);
+        rbChoiceC.setEnabled(editable);
         rbChoiceD = fragRoot.findViewById(R.id.rbQuestionChoiceD);
         rbChoiceD.setOnCheckedChangeListener(this);
+        rbChoiceD.setEnabled(editable);
 
         updateQuestionBody();
-
-        vTransHover = fragRoot.findViewById(R.id.vTransHover);
-        vTransHover.setVisibility(editable ? View.INVISIBLE : View.VISIBLE);
-        vTransHover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Just to block click on under-layer controls
-            }
-        });
 
         pQuestionResult = fragRoot.findViewById(R.id.pQuestionResult);
         pQuestionResult.setVisibility(editable ? View.INVISIBLE : View.VISIBLE);
@@ -105,8 +108,31 @@ public class PracticeQuestionFragment extends Fragment implements CompoundButton
     }
 
     public void updateQuestionBody() {
-        QuestionBody body = question.getBodyByLanguage(((PracticeActivity)getActivity()).getCurLanguage());
+        PracticeActivity curActivity = (PracticeActivity) getActivity();
+        QuestionBody body = question.getBodyByLanguage((curActivity == null) ?
+                QuestionBody.Language.Chinese : curActivity.getCurLanguage());
         tvDescription.setText(Html.fromHtml(body.getDescription()));
+        if (question.getImage() == null) {
+            imgQuestionImage.setVisibility(View.INVISIBLE);
+        } else {
+            imgQuestionImage.setVisibility(View.VISIBLE);
+
+            InputStream is = null;
+            try {
+                is = getActivity().getResources().getAssets().open("questions/" + question.getImage());
+                imgQuestionImage.setImageDrawable(Drawable.createFromStream(is, null));
+            } catch (IOException ioe) {
+                imgQuestionImage.setVisibility(View.INVISIBLE);
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        // Ignore here
+                    }
+                }
+            }
+        }
         rbChoiceA.setText("A: " + body.getChoiceA());
         rbChoiceB.setText("B: " + body.getChoiceB());
         rbChoiceC.setText("C: " + body.getChoiceC());
