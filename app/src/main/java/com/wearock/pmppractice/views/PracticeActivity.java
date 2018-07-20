@@ -95,14 +95,6 @@ public class PracticeActivity extends AppCompatActivity {
         initControls();
 
         curLanguage = QuestionBody.Language.Chinese;
-
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                secondsLeft -= 1;
-                handler.sendEmptyMessage(secondsLeft);
-            }
-        };
         handler = new Handler() {
             public void handleMessage(Message msg) {
                 tvTimeLeft.setText(getTimeLeftString());
@@ -140,6 +132,14 @@ public class PracticeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (secondsLeft > 0) {
+            task = new TimerTask() {
+                @Override
+                public void run() {
+                    secondsLeft -= 1;
+                    handler.sendEmptyMessage(secondsLeft);
+                }
+            };
+
             timer = new Timer();
             timer.schedule(task, 0, 1000);
         }
