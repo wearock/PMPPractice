@@ -112,8 +112,8 @@ public class PracticeQuestionFragment extends Fragment implements CompoundButton
         QuestionBody body = question.getBodyByLanguage((curActivity == null) ?
                 QuestionBody.Language.Chinese : curActivity.getCurLanguage());
         tvDescription.setText(Html.fromHtml(body.getDescription()));
-        if (question.getImage() == null) {
-            imgQuestionImage.setVisibility(View.INVISIBLE);
+        if (question.getImage() == null || question.getImage().isEmpty()) {
+            imgQuestionImage.setVisibility(View.GONE);
         } else {
             imgQuestionImage.setVisibility(View.VISIBLE);
 
@@ -183,7 +183,7 @@ public class PracticeQuestionFragment extends Fragment implements CompoundButton
         ((TextView) tipsRoot.findViewById(R.id.tvTipsProcess)).setText(question.getProcess());
         ((TextView) tipsRoot.findViewById(R.id.tvTipsSubproc)).setText(question.getSubProcess());
         ((TextView) tipsRoot.findViewById(R.id.tvTipsKnowledgePoint)).setText(question.getKnowledgePoint());
-        ((TextView) tipsRoot.findViewById(R.id.tvTipsExplain)).setText(question.getExplanation());
+        ((TextView) tipsRoot.findViewById(R.id.tvTipsExplain)).setText(question.getExplanation().replace("<br/>","*").replace('*', '\n'));
 
         builder.setTitle(R.string.practice_menu_tips);
         builder.setView(tipsRoot);

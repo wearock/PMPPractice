@@ -66,7 +66,7 @@ public class QuestionDAO {
             if (bApplyQuery) {
                 builder.append(" and");
             }
-            builder.append(String.format(Locale.US, "q.source=%d", config.getQuestionSource().getValue()));
+            builder.append(String.format(Locale.US, " q.source=%d", config.getQuestionSource().getValue()));
         }
 
         SQLiteDatabase db = null;
